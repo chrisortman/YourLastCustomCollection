@@ -20,6 +20,7 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
+            customers = customers.Sort(new CustomerComparer());
             for (int i = 0; i < customers.Count; i++)
             {
                 if (customers[i].Name.Contains("s"))
@@ -37,6 +38,19 @@ namespace YourLastCustomCollection
             }
 
             Console.ReadLine();
+        }
+    }
+
+    class CustomerComparer : IComparer<Customer>, IComparer
+    {
+        public int Compare(Customer x, Customer y)
+        {
+            return y.Name.CompareTo(x.Name);
+        }
+
+        public int Compare(object x, object y)
+        {
+            return Compare((Customer) x, (Customer) y);
         }
     }
 
