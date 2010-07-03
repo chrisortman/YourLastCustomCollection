@@ -22,7 +22,10 @@ namespace YourLastCustomCollection
 
             for (int i = 0; i < customers.Count; i++)
             {
-                Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
+                if (customers[i].Name.Contains("s"))
+                {
+                    Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
+                }
             }
 
             Console.WriteLine();
