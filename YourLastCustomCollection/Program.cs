@@ -10,12 +10,12 @@ namespace YourLastCustomCollection
     {
         static void Main(string[] args)
         {
-            var customers = new CustomerCollection();
+            var customers = new YourLastCollection<Customer>();
             customers.Add(new Customer("Chris"));
             customers.Add(new Customer("Missy"));
             customers.Add(new Customer("Lincoln"));
 
-            var addresses = new AddressCollection();
+            var addresses = new YourLastCollection<Address>();
             addresses.Add(new Address("Mitchell", "SD"));
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
@@ -33,6 +33,19 @@ namespace YourLastCustomCollection
             }
 
             Console.ReadLine();
+        }
+    }
+
+    class YourLastCollection<CLASS> : CollectionBase
+    {
+        public void Add(CLASS obj)
+        {
+            InnerList.Add(obj);
+        }
+
+        public CLASS this[int index]
+        {
+            get { return (CLASS) InnerList[index]; }
         }
     }
 
