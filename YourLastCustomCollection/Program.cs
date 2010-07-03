@@ -30,6 +30,7 @@ namespace YourLastCustomCollection
 
             Console.WriteLine();
 
+            addresses = addresses.Sort(new AddressComparer());
             for (int i = 0; i < addresses.Count; i++)
             {
                 Console.WriteLine("Address {0} is {1},{2}", i, addresses[i].City, addresses[i].State);
@@ -39,16 +40,44 @@ namespace YourLastCustomCollection
         }
     }
 
+    class AddressComparer : IComparer<Address>, IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            return Compare((Address) x, (Address) y);
+        }
+
+        public int Compare(Address x, Address y)
+        {
+            return x.City.CompareTo(y.City);
+        }
+    }
+
     class YourLastCollection<CLASS> : CollectionBase
     {
         public void Add(CLASS obj)
         {
             InnerList.Add(obj);
+            
         }
 
         public CLASS this[int index]
         {
             get { return (CLASS) InnerList[index]; }
+        }
+
+
+        public YourLastCollection<CLASS> Sort(IComparer comparer)
+        {
+            var sorted = new YourLastCollection<CLASS>();
+            
+            foreach(CLASS c in InnerList)
+            {
+                sorted.Add(c);
+            }
+
+            sorted.InnerList.Sort(comparer);
+            return sorted;
         }
     }
 
