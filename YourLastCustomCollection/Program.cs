@@ -18,8 +18,10 @@ namespace YourLastCustomCollection
             
             for(int i=0; i<customers.Count; i++)
             {
-                Console.WriteLine("Customer {0}'s name is {1}",i,customers[i].Name);
+                Console.WriteLine("Customer {0}'s name is {1}",i,((Customer)customers[i]).Name);
             }
+
+            Console.ReadLine();
         }
     }
 
