@@ -10,7 +10,7 @@ namespace YourLastCustomCollection
     {
         static void Main(string[] args)
         {
-            ArrayList customers = new ArrayList();
+            var customers = new CustomerCollection();
             customers.Add(new Customer("Chris"));
             customers.Add(new Customer("Missy"));
             customers.Add(new Customer("Lincoln"));
@@ -22,6 +22,19 @@ namespace YourLastCustomCollection
             }
 
             Console.ReadLine();
+        }
+    }
+
+    class CustomerCollection : System.Collections.CollectionBase
+    {
+        public void Add(Customer c)
+        {
+            base.InnerList.Add(c);
+        }
+
+        public Customer this[int index]
+        {
+            get { return (Customer)InnerList[index];  }
         }
     }
 
