@@ -20,7 +20,7 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            customers = customers.Sort(new CustomerComparer());
+            customers = customers.Sort(new CustomerComparer(descending:true));
             for (int i = 0; i < customers.Count; i++)
             {
                 if (customers[i].Name.Contains("s"))
@@ -43,11 +43,34 @@ namespace YourLastCustomCollection
 
     class CustomerComparer : IComparer<Customer>, IComparer
     {
+        private readonly bool _descending;
+
+        public CustomerComparer(bool @descending = false)
+        {
+            _descending = descending;
+        }
+
         public int Compare(Customer x, Customer y)
+        {
+            if (_descending)
+            {
+                return CompareDescending(x, y);
+            }
+            else
+            {
+                return CompareAscending(x, y);
+            }
+        }
+
+        private int CompareDescending(Customer x, Customer y)
         {
             return y.Name.CompareTo(x.Name);
         }
 
+        private int CompareAscending(Customer x, Customer y)
+        {
+            return x.Name.CompareTo(y.Name);
+        }
         public int Compare(object x, object y)
         {
             return Compare((Customer) x, (Customer) y);
