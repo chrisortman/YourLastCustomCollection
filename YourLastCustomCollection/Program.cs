@@ -15,13 +15,40 @@ namespace YourLastCustomCollection
             customers.Add(new Customer("Missy"));
             customers.Add(new Customer("Lincoln"));
 
-            
-            for(int i=0; i<customers.Count; i++)
+            var addresses = new AddressCollection();
+            addresses.Add(new Address("Mitchell", "SD"));
+            addresses.Add(new Address("Ethan", "SD"));
+            addresses.Add(new Address("Canistota", "SD"));
+
+            for (int i = 0; i < customers.Count; i++)
             {
-                Console.WriteLine("Customer {0}'s name is {1}",i,((Customer)customers[i]).Name);
+                Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
+            }
+
+            Console.WriteLine();
+
+            for (int i = 0; i < addresses.Count; i++)
+            {
+                Console.WriteLine("Address {0} is {1},{2}", i, addresses[i].City, addresses[i].State);
             }
 
             Console.ReadLine();
+        }
+    }
+
+    class AddressCollection : CollectionBase
+    {
+        public void Add(Address a)
+        {
+            InnerList.Add(a);
+        }
+
+        public Address this[int index]
+        {
+            get
+            {
+                return (Address) InnerList[index];
+            }
         }
     }
 
@@ -36,6 +63,18 @@ namespace YourLastCustomCollection
         {
             get { return (Customer)InnerList[index];  }
         }
+    }
+
+    class Address
+    {
+        public Address(string city, string state)
+        {
+            City = city;
+            State = state;
+        }
+
+        public string City { get; set; }
+        public string State { get; set; }
     }
 
     class Customer
