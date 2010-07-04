@@ -20,13 +20,11 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
+            customers = customers.Filter(c => c.Name.Contains("s"));
             customers = customers.Sort(new AnythingComparer<Customer>((x,y) => x.Name.CompareTo(y.Name)));
             for (int i = 0; i < customers.Count; i++)
             {
-                if (customers[i].Name.Contains("s"))
-                {
-                    Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
-                }
+                Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
             }
 
             Console.WriteLine();
@@ -87,6 +85,19 @@ namespace YourLastCustomCollection
 
             sorted.InnerList.Sort(comparer);
             return sorted;
+        }
+
+        public YourLastCollection<CLASS> Filter(Func<CLASS,bool> criteria)
+        {
+            var filtered = new YourLastCollection<CLASS>();
+            foreach(CLASS d in InnerList)
+            {
+                if(criteria(d))
+                {
+                    filtered.Add(d);
+                }
+            }
+            return filtered;
         }
     }
 
