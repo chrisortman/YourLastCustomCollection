@@ -20,7 +20,7 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            customers = customers.Sort(new CustomerComparer((x,y) => x.Name.CompareTo(y.Name)));
+            customers = customers.Sort(new AnythingComparer<Customer>((x,y) => x.Name.CompareTo(y.Name)));
             for (int i = 0; i < customers.Count; i++)
             {
                 if (customers[i].Name.Contains("s"))
@@ -31,7 +31,8 @@ namespace YourLastCustomCollection
 
             Console.WriteLine();
 
-            addresses = addresses.Sort(new AddressComparer());
+            addresses = addresses.Sort(new AnythingComparer<Address>((x,y) => x.City.CompareTo(y.City)));
+
             for (int i = 0; i < addresses.Count; i++)
             {
                 Console.WriteLine("Address {0} is {1},{2}", i, addresses[i].City, addresses[i].State);
@@ -41,36 +42,23 @@ namespace YourLastCustomCollection
         }
     }
 
-    class CustomerComparer : IComparer<Customer>, IComparer
+    class AnythingComparer<CLASS> : IComparer<CLASS>, IComparer
     {
-        private readonly Func<Customer, Customer, int> _sortFunction;
+        private readonly Func<CLASS, CLASS, int> _sortFunction;
 
-        public CustomerComparer(Func<Customer,Customer,int> sortFunction)
+        public AnythingComparer(Func<CLASS,CLASS,int> sortFunction)
         {
             _sortFunction = sortFunction;
         }
 
-        public int Compare(Customer x, Customer y)
+        public int Compare(CLASS x, CLASS y)
         {
             return _sortFunction(x, y);
         }
 
         public int Compare(object x, object y)
         {
-            return Compare((Customer) x, (Customer) y);
-        }
-    }
-
-    class AddressComparer : IComparer<Address>, IComparer
-    {
-        public int Compare(object x, object y)
-        {
-            return Compare((Address) x, (Address) y);
-        }
-
-        public int Compare(Address x, Address y)
-        {
-            return x.City.CompareTo(y.City);
+            return Compare((CLASS) x, (CLASS) y);
         }
     }
 
@@ -99,6 +87,19 @@ namespace YourLastCustomCollection
 
             sorted.InnerList.Sort(comparer);
             return sorted;
+        }
+    }
+
+    class AddressComparer : IComparer<Address>, IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            return Compare((Address) x, (Address) y);
+        }
+
+        public int Compare(Address x, Address y)
+        {
+            return x.City.CompareTo(y.City);
         }
     }
 
