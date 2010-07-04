@@ -20,8 +20,8 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            customers = customers.Filter(c => c.Name.Contains("s"));
-            customers = customers.Sort(x => x.Name);
+            customers = customers.Filter(c => c.Name.Contains("s")).Sort(x => x.Name);
+
             for (int i = 0; i < customers.Count; i++)
             {
                 Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
