@@ -22,18 +22,20 @@ namespace YourLastCustomCollection
 
             customers = customers.Filter(c => c.Name.Contains("s")).Sort(x => x.Name);
 
-            for (int i = 0; i < customers.Count; i++)
+            int i = 0;
+            foreach(var customer in customers)
             {
-                Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
+                Console.WriteLine("Customer {0}'s name is {1}", i,  customer.Name);
+                i = i + 1;
             }
 
             Console.WriteLine();
 
             addresses = addresses.Sort(x => x.City);
 
-            for (int i = 0; i < addresses.Count; i++)
+            foreach(var address in addresses)
             {
-                Console.WriteLine("Address {0} is {1},{2}", i, addresses[i].City, addresses[i].State);
+                Console.WriteLine("Address {0} is {1},{2}", i, address.City, address.State);
             }
 
             Console.ReadLine();
@@ -60,7 +62,7 @@ namespace YourLastCustomCollection
         }
     }
 
-    class YourLastCollection<CLASS> : CollectionBase
+    class YourLastCollection<CLASS> : CollectionBase, IEnumerable<CLASS>
     {
         public void Add(CLASS obj)
         {
@@ -108,6 +110,14 @@ namespace YourLastCustomCollection
                 }
             }
             return filtered;
+        }
+
+        public IEnumerator<CLASS> GetEnumerator()
+        {
+           foreach(CLASS c in InnerList)
+           {
+               yield return c;
+           } 
         }
     }
 
