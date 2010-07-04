@@ -21,7 +21,7 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Canistota", "SD"));
 
             customers = customers.Filter(c => c.Name.Contains("s"));
-            customers = customers.Sort(new AnythingComparer<Customer>((x,y) => x.Name.CompareTo(y.Name)));
+            customers = customers.Sort(x => x.Name);
             for (int i = 0; i < customers.Count; i++)
             {
                 Console.WriteLine("Customer {0}'s name is {1}", i, ((Customer) customers[i]).Name);
@@ -29,7 +29,7 @@ namespace YourLastCustomCollection
 
             Console.WriteLine();
 
-            addresses = addresses.Sort(new AnythingComparer<Address>((x,y) => x.City.CompareTo(y.City)));
+            addresses = addresses.Sort(x => x.City);
 
             for (int i = 0; i < addresses.Count; i++)
             {
@@ -87,6 +87,16 @@ namespace YourLastCustomCollection
             return sorted;
         }
 
+        public YourLastCollection<CLASS> Sort(Func<CLASS,IComparable> property)
+        {
+
+            var comparer = new AnythingComparer<CLASS>((x, y) =>
+            {
+                return property(x).CompareTo(property(y));
+            });
+
+            return Sort(comparer);
+        }
         public YourLastCollection<CLASS> Filter(Func<CLASS,bool> criteria)
         {
             var filtered = new YourLastCollection<CLASS>();
