@@ -64,6 +64,9 @@ namespace YourLastCustomCollection
 
     class YourLastCollection<CLASS> : CollectionBase, IEnumerable<CLASS>
     {
+        private IComparer _currentSort;
+        private Func<CLASS, bool> _currentFilter;
+
         public void Add(CLASS obj)
         {
             InnerList.Add(obj);
@@ -76,7 +79,7 @@ namespace YourLastCustomCollection
         }
 
 
-        public YourLastCollection<CLASS> Sort(IComparer comparer)
+        private YourLastCollection<CLASS> Sort(IComparer comparer)
         {
             var sorted = new YourLastCollection<CLASS>();
             
@@ -97,26 +100,38 @@ namespace YourLastCustomCollection
                 return property(x).CompareTo(property(y));
             });
 
-            return Sort(comparer);
+            _currentSort = comparer;
+            return this;
         }
         public YourLastCollection<CLASS> Filter(Func<CLASS,bool> criteria)
         {
-            var filtered = new YourLastCollection<CLASS>();
-            foreach(CLASS d in InnerList)
-            {
-                if(criteria(d))
-                {
-                    filtered.Add(d);
-                }
-            }
-            return filtered;
+            _currentFilter = criteria;
+            return this;
         }
 
         public IEnumerator<CLASS> GetEnumerator()
         {
+            if(_currentSort != null)
+            {
+                InnerList.Sort(_currentSort);
+            }
            foreach(CLASS c in InnerList)
            {
-               yield return c;
+               if(_currentFilter != null)
+               {
+                   if(_currentFilter(c) )
+                   {
+                       yield return c;
+                   }
+                   else
+                   {
+                       yield return c;
+                   }
+               }
+               else
+               {
+                   yield return c;
+               }
            } 
         }
     }
