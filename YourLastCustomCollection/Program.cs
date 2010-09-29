@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
+//using System.Linq;
 using System.Text;
 
 namespace YourLastCustomCollection
@@ -20,8 +20,8 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            var filteredAndSortedCustomers = customers.Filter(c => c.Name.Contains("s")).Sort(x => x.Name);
-
+            var filteredAndSortedCustomers = customers.Where(c => c.Name.Contains("s")).OrderBy(x => x.Name);
+            
             int i = 0;
             foreach(var customer in filteredAndSortedCustomers)
             {
@@ -31,7 +31,7 @@ namespace YourLastCustomCollection
 
             Console.WriteLine();
 
-            var sortedAddresses = addresses.Sort(x => x.City);
+            var sortedAddresses = addresses.OrderBy(x => x.City);
 
             foreach(var address in sortedAddresses)
             {
@@ -64,12 +64,12 @@ namespace YourLastCustomCollection
 
     static class CollectionExtensions
     {
-        public static IEnumerable<CLASS> Filter<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,bool> criteria)
+        public static IEnumerable<CLASS> Where<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,bool> criteria)
         {
             return new FilteredEnumerable<CLASS>(collection, criteria);
         }
 
-        public static IEnumerable<CLASS> Sort<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,IComparable> property)
+        public static IEnumerable<CLASS> OrderBy<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,IComparable> property)
         {
             return new OrderedEnumerable<CLASS>(collection, property);
         }
