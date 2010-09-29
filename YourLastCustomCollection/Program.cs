@@ -123,10 +123,6 @@ namespace YourLastCustomCollection
                    {
                        yield return c;
                    }
-                   else
-                   {
-                       yield return c;
-                   }
                }
                else
                {
