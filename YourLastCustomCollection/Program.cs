@@ -10,12 +10,12 @@ namespace YourLastCustomCollection
     {
         static void Main(string[] args)
         {
-            var customers = new YourLastCollection<Customer>();
+            var customers = new List<Customer>();
             customers.Add(new Customer("Chris"));
             customers.Add(new Customer("Missy"));
             customers.Add(new Customer("Lincoln"));
 
-            var addresses = new YourLastCollection<Address>();
+            var addresses = new List<Address>();
             addresses.Add(new Address("Mitchell", "SD"));
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
