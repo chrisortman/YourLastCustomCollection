@@ -20,7 +20,10 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            var filteredAndSortedCustomers = customers.Where(c => c.Name.Contains("s")).OrderBy(x => x.Name);
+            var filteredAndSortedCustomers = from c in customers
+                                             where c.Name.Contains("s")
+                                             orderby c.Name
+                                             select c;
             
             int i = 0;
             foreach(var customer in filteredAndSortedCustomers)
