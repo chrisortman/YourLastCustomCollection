@@ -20,10 +20,10 @@ namespace YourLastCustomCollection
             addresses.Add(new Address("Ethan", "SD"));
             addresses.Add(new Address("Canistota", "SD"));
 
-            customers = customers.Filter(c => c.Name.Contains("s")).Sort(x => x.Name);
+            var filteredAndSortedCustomers = customers.Filter(c => c.Name.Contains("s")).Sort(x => x.Name);
 
             int i = 0;
-            foreach(var customer in customers)
+            foreach(var customer in filteredAndSortedCustomers)
             {
                 Console.WriteLine("Customer {0}'s name is {1}", i,  customer.Name);
                 i = i + 1;
@@ -31,9 +31,9 @@ namespace YourLastCustomCollection
 
             Console.WriteLine();
 
-            addresses = addresses.Sort(x => x.City);
+            var sortedAddresses = addresses.Sort(x => x.City);
 
-            foreach(var address in addresses)
+            foreach(var address in sortedAddresses)
             {
                 Console.WriteLine("Address {0} is {1},{2}", i, address.City, address.State);
             }
@@ -62,11 +62,102 @@ namespace YourLastCustomCollection
         }
     }
 
+    static class CollectionExtensions
+    {
+        public static IEnumerable<CLASS> Filter<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,bool> criteria)
+        {
+            return new FilteredEnumerable<CLASS>(collection, criteria);
+        }
+
+        public static IEnumerable<CLASS> Sort<CLASS>(this IEnumerable<CLASS> collection, Func<CLASS,IComparable> property)
+        {
+            return new OrderedEnumerable<CLASS>(collection, property);
+        }
+
+        class OrderedEnumerable<CLASS> : IEnumerable<CLASS>
+        {
+            private IEnumerable<CLASS> _mainList;
+            private Func<CLASS, IComparable> _sortProperty;
+
+            public OrderedEnumerable(IEnumerable<CLASS> mainList, Func<CLASS, IComparable> sortProperty)
+            {
+                _mainList = mainList;
+                _sortProperty = sortProperty;
+            }
+
+            /// <summary>
+            /// Returns an enumerator that iterates through the collection.
+            /// </summary>
+            /// <returns>
+            /// A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            /// </returns>
+            /// <filterpriority>1</filterpriority>
+            public IEnumerator<CLASS> GetEnumerator()
+            {
+                var comparer = new AnythingComparer<CLASS>((x, y) =>
+                {
+                    return _sortProperty(x).CompareTo(_sortProperty(y));
+                });
+
+                var sortedList = new List<CLASS>(_mainList);
+                sortedList.Sort(comparer);
+
+                foreach(var item in sortedList)
+                {
+                    yield return item;
+                }
+            }
+
+            /// <summary>
+            /// Returns an enumerator that iterates through a collection.
+            /// </summary>
+            /// <returns>
+            /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            /// </returns>
+            /// <filterpriority>2</filterpriority>
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+        class FilteredEnumerable<CLASS> : IEnumerable<CLASS>
+        {
+            private Func<CLASS, bool> _criteria;
+            private IEnumerable<CLASS> _mainList;
+
+            public FilteredEnumerable(IEnumerable<CLASS> mainList, Func<CLASS, bool> criteria)
+            {
+                _criteria = criteria;
+                _mainList = mainList;
+            }
+
+            public IEnumerator<CLASS> GetEnumerator()
+            {
+                foreach(var c in _mainList)
+                {
+                    if(_criteria(c))
+                    {
+                        yield return c;
+                    }
+                }
+            }
+
+            /// <summary>
+            /// Returns an enumerator that iterates through a collection.
+            /// </summary>
+            /// <returns>
+            /// An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            /// </returns>
+            /// <filterpriority>2</filterpriority>
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+        }
+    }
     class YourLastCollection<CLASS> : CollectionBase, IEnumerable<CLASS>
     {
-        private IComparer _currentSort;
-        private Func<CLASS, bool> _currentFilter;
-
+        
         public void Add(CLASS obj)
         {
             InnerList.Add(obj);
@@ -78,57 +169,13 @@ namespace YourLastCustomCollection
             get { return (CLASS) InnerList[index]; }
         }
 
-
-        private YourLastCollection<CLASS> Sort(IComparer comparer)
-        {
-            var sorted = new YourLastCollection<CLASS>();
-            
-            foreach(CLASS c in InnerList)
-            {
-                sorted.Add(c);
-            }
-
-            sorted.InnerList.Sort(comparer);
-            return sorted;
-        }
-
-        public YourLastCollection<CLASS> Sort(Func<CLASS,IComparable> property)
-        {
-
-            var comparer = new AnythingComparer<CLASS>((x, y) =>
-            {
-                return property(x).CompareTo(property(y));
-            });
-
-            _currentSort = comparer;
-            return this;
-        }
-        public YourLastCollection<CLASS> Filter(Func<CLASS,bool> criteria)
-        {
-            _currentFilter = criteria;
-            return this;
-        }
-
         public IEnumerator<CLASS> GetEnumerator()
         {
-            if(_currentSort != null)
+
+            foreach(CLASS c in InnerList)
             {
-                InnerList.Sort(_currentSort);
+                yield return c;
             }
-           foreach(CLASS c in InnerList)
-           {
-               if(_currentFilter != null)
-               {
-                   if(_currentFilter(c) )
-                   {
-                       yield return c;
-                   }
-               }
-               else
-               {
-                   yield return c;
-               }
-           } 
         }
     }
 
